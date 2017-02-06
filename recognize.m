@@ -14,7 +14,7 @@ y(y == 0) = 10;
 % displayTrainSample(data, 1);
 
 input_layer_size  = 784;
-hidden_layer_size = 25;
+hidden_layer_size = 800;
 num_labels = 10;
 
 initial_Theta1 = randInitializeWeights(input_layer_size, hidden_layer_size);

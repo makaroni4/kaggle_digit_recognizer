@@ -1,6 +1,6 @@
-function displayTrainSample(X, i)
-  label = X(i, 1);
-  sample = X(i, 2:end);
+function displayTrainSample(data, i)
+  label = data(i, 1);
+  sample = data(i, 2:end);
 
   colormap(gray);
 

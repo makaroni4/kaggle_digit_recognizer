@@ -28,7 +28,7 @@ initial_nn_params = [initial_Theta1(:) ; initial_Theta2(:)];
 
 fprintf('--> Training Neural Network\n')
 
-options = optimset('MaxIter', 50);
+options = optimset('MaxIter', 150);
 
 lambda = 1;
 

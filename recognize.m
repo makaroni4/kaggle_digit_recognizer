@@ -13,45 +13,33 @@ y(y == 0) = 10;
 
 % displayTrainSample(data, 1);
 
-input_layer_size  = 784;
+input_layer_size = 784;
 hidden_layer_size = 800;
-num_labels = 10;
+% lambda_vec = [0 0.001 0.003 0.01 0.03 0.1 0.3 1 3 10];
+lambda_vec = [5];
+maxIter = 10;
 
-initial_Theta1 = randInitializeWeights(input_layer_size, hidden_layer_size);
-initial_Theta2 = randInitializeWeights(hidden_layer_size, num_labels);
+bestAccuracy = 0;
+bestLambda = -1;
+bestTheta1 = [];
+bestTheta2 = [];
 
-% Unroll parameters
-initial_nn_params = [initial_Theta1(:) ; initial_Theta2(:)];
+for i = 1:length(lambda_vec)
+  lambda = lambda_vec(i);
+  [trainSetAccuracy, Theta1, Theta2] = trainNN(lambda, X, y, input_layer_size, hidden_layer_size, maxIter);
 
-%  Check gradients by running checkNNGradients
-% checkNNGradients;
+  fprintf('-->Accuracy for lambda %f is %f\n', lambda, trainSetAccuracy);
 
-fprintf('--> Training Neural Network\n')
+  if trainSetAccuracy > bestAccuracy
+    bestAccuracy = trainSetAccuracy;
+    bestLambda = lambda;
+    bestTheta1 = Theta1;
+    bestTheta2 = Theta2;
+  end
+end
 
-options = optimset('MaxIter', 150);
+fprintf('\n-->Best accuracy is %f for lambda %f is %f\n', bestAccuracy, bestLambda);
 
-lambda = 1;
+fprintf('--> Prediction test set\n');
 
-% Create "short hand" for the cost function to be minimized
-costFunction = @(p) nnCostFunction(p, ...
-                                   input_layer_size, ...
-                                   hidden_layer_size, ...
-                                   num_labels, X, y, lambda);
-
-[nn_params, cost] = fmincg(costFunction, initial_nn_params, options);
-
-Theta1 = reshape(nn_params(1:hidden_layer_size * (input_layer_size + 1)), ...
-                 hidden_layer_size, (input_layer_size + 1));
-
-Theta2 = reshape(nn_params((1 + (hidden_layer_size * (input_layer_size + 1))):end), ...
-                 num_labels, (hidden_layer_size + 1));
-
-fprintf('--> Prediction train set\n')
-
-pred = predict(Theta1, Theta2, X);
-
-fprintf('-->Training Set Accuracy: %f\n', mean(double(pred == y)) * 100);
-
-fprintf('--> Prediction test set\n')
-
-predictTestSet('data/test.csv', 'output.csv', Theta1, Theta2);
+predictTestSet('data/test.csv', 'output.csv', bestTheta1, bestTheta2);

@@ -1,15 +1,12 @@
-function displayTrainSample(data, i)
+function displayTrainSample(data, i, boxSize)
   label = data(i, 1);
   sample = data(i, 2:end);
 
   colormap(gray);
 
-  height = 28;
-  width = 28;
-
   max_val = max(abs(sample));
 
-  display_array = reshape(sample, height, width) / max_val;
+  display_array = reshape(sample, boxSize, boxSize) / max_val;
 
   imagesc(display_array, [0 0]);
 

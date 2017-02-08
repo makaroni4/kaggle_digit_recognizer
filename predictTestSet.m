@@ -5,6 +5,7 @@ function predictTestSet(inputfile, outputfile, Theta1, Theta2)
   fclose(fid);
 
   X = readData(inputfile);
+  X = normalizeX(X);
   m = size(X, 1);
 
   pred = predict(Theta1, Theta2, X);

@@ -4,25 +4,21 @@ clear ; close all; clc
 
 fprintf('--> Reading train data\n')
 
-digit_size = 28;
+digit_size = 20;
 
-% data = readData('data/sample_train.csv');
-% data = readData('data/train.csv');
-data = readData('data/train.csv');
-rotatedData = readData('data/train_rotated.csv');
-
-data = [data; rotatedData];
+data = readData('data/train_small_digits.csv');
+% rotatedData = readData('data/train_rotated.csv');
+% data = [data; rotatedData];
 
 X = data(:, 2:end);
+X = normalizeX(X);
 y = data(:, 1);
-% Since there is no 0 index in Octave, 0 is 10
-y(y == 0) = 10;
+y(y == 0) = 10; % Since there is no 0 index in Octave, 0 is 10
 
 input_layer_size = digit_size * digit_size;
 hidden_layer_size = 800;
-% lambda_vec = [0 0.001 0.003 0.01 0.03 0.1 0.3 1 3 10];
 lambda_vec = [1];
-maxIter = 150;
+maxIter = 50;
 
 bestAccuracy = 0;
 bestLambda = -1;

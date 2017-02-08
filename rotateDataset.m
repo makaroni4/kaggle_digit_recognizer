@@ -1,5 +1,4 @@
-function rotatedDataset = rotateDataset(data, digitSize, outputFile)
-  rotatedDataset = [];
+function rotateDataset(data, digitSize, outputFile)
   m = size(data, 1);
 
   for i = 1:m

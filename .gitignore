@@ -8,3 +8,5 @@ data/test_small_digits.csv
 data/train_small_digits.csv
 
 data/train_rotated_small_digits.csv
+
+data/train_flipped_small_digits.csv

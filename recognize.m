@@ -7,8 +7,10 @@ fprintf('--> Reading train data\n')
 digit_size = 20;
 
 data = readData('data/train_small_digits.csv');
-% rotatedData = readData('data/train_rotated.csv');
-% data = [data; rotatedData];
+data = [data; readData('data/train_rotated_small_digits.csv')];
+data = [data; readData('data/train_flipped_small_digits.csv')];
+m = size(data, 1);
+data = data(randperm(m), :);
 
 X = data(:, 2:end);
 X = normalizeX(X);
@@ -18,7 +20,7 @@ y(y == 0) = 10; % Since there is no 0 index in Octave, 0 is 10
 input_layer_size = digit_size * digit_size;
 hidden_layer_size = 800;
 lambda_vec = [1];
-maxIter = 50;
+maxIter = 150;
 
 bestAccuracy = 0;
 bestLambda = -1;
@@ -43,4 +45,4 @@ fprintf('\n-->Best accuracy is %f for lambda %f is %f\n', bestAccuracy, bestLamb
 
 fprintf('--> Prediction test set\n');
 
-predictTestSet('data/test.csv', 'output.csv', bestTheta1, bestTheta2);
+predictTestSet('data/test_small_digits.csv', 'output.csv', bestTheta1, bestTheta2);

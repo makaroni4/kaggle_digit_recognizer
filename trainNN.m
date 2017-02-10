@@ -1,4 +1,4 @@
-function [trainSetAccuracy, Theta1, Theta2] = trainNN(lambda, X, y, input_layer_size, hidden_layer_size, maxIter)
+function [trainSetAccuracy, Theta1, Theta2] = trainNN(lambda, X, y, input_layer_size, hidden_layer_size, maxIter, validationData)
   num_labels = 10;
 
   initial_Theta1 = randInitializeWeights(input_layer_size, hidden_layer_size);
@@ -22,7 +22,7 @@ function [trainSetAccuracy, Theta1, Theta2] = trainNN(lambda, X, y, input_layer_
                                      hidden_layer_size, ...
                                      num_labels, X, y, lambda);
 
-  [nn_params, cost] = fmincg(costFunction, initial_nn_params, options);
+  [nn_params, cost] = fmincg(costFunction, initial_nn_params, validationData, options);
 
   Theta1 = reshape(nn_params(1:hidden_layer_size * (input_layer_size + 1)), ...
                    hidden_layer_size, (input_layer_size + 1));

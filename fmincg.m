@@ -1,4 +1,4 @@
-function [X, fX, i] = fmincg(f, X, options, P1, P2, P3, P4, P5)
+function [X, fX, i] = fmincg(f, X, validationData, options, P1, P2, P3, P4, P5)
 % Minimize a continuous differentialble multivariate function. Starting point
 % is given by "X" (D by 1), and the function named in the string "f", must
 % return a function value and a vector of partial derivatives. The Polack-
@@ -54,6 +54,11 @@ else
     length = 100;
 end
 
+crossValAccuracies = [];
+crossValAccuraciesFile = 'cross_val_accuracy_per_epoch.dat';
+fid = fopen(crossValAccuraciesFile, 'w');
+fprintf(fid, 'Epoch,Accuracy\n');
+fclose(fid);
 
 RHO = 0.01;                            % a bunch of constants for line searches
 SIG = 0.5;       % RHO and SIG are the constants in the Wolfe-Powell conditions
@@ -63,10 +68,13 @@ MAX = 20;                         % max 20 function evaluations per line search
 RATIO = 100;                                      % maximum allowed slope ratio
 
 argstr = ['feval(f, X'];                      % compose string used to call function
-for i = 1:(nargin - 3)
+for i = 1:(nargin - 4)
   argstr = [argstr, ',P', int2str(i)];
 end
 argstr = [argstr, ')'];
+
+nargin
+argstr
 
 if max(size(length)) == 2, red=length(2); length=length(1); else red=1; end
 S=['Iteration '];
@@ -146,7 +154,11 @@ while i < abs(length)                                      % while not finished
 
   if success                                         % if line search succeeded
     f1 = f2; fX = [fX' f1]';
-    fprintf('\n%s %4i | Cost: %4.6e\r', S, i, f1);
+    fprintf('\n%s %4i | Cost: %4.6e', S, i, f1);
+
+    crossValAccuracy = crossValPredict(validationData, X, i);
+    dlmwrite(crossValAccuraciesFile, [i crossValAccuracy], '-append', 'delimiter', ',');
+
     s = (df2'*df2-df1'*df2)/(df1'*df1)*s - df2;      % Polack-Ribiere direction
     tmp = df1; df1 = df2; df2 = tmp;                         % swap derivatives
     d2 = df1'*s;
